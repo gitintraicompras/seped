@@ -6,7 +6,7 @@ use App\User;
 use Carbon\Carbon;
 
 function sRetornaPromDias($codprod, $codisb) {
-    if ($codisb == "") 
+    if ($codisb == "")
         $codisb = Session::get('sucactiva', sRetornaCodSucursal());
     $dias = 0;
     $fechaHoy = trim(date("Y-m-d"));
@@ -51,7 +51,7 @@ function sRetornaCodSucursal() {
             $sucactiva = $sucursal->codisb;
         }
         if ($tipo == 'A') {
-             return $sucactiva;     
+             return $sucactiva;
         }
         if ($tipo == 'V' || $tipo == 'S' || $tipo == 'R' || $tipo == 'P') {
             $codisbpredet = Auth::user()->codisbpredet;
@@ -143,16 +143,16 @@ function RetornaFactorCambiario($codprove, $moneda) {
             if ($maeprove->factorSeleccion == "TODAY") {
                 $factor = $cfg->factorToday;
                 $factorTODAY = $factor;
-            } 
+            }
         }
-        if ($factor <= 1.00) { 
+        if ($factor <= 1.00) {
             if ($factorBCV != 0.00 && $factorBCV != 1.00 )
-                $factor = $factorBCV;   
-        } 
-        if ($factor <= 1.00) { 
+                $factor = $factorBCV;
+        }
+        if ($factor <= 1.00) {
             if ($factorTODAY != 0.00 && $factorTODAY != 1.00 )
-                $factor = $factorTODAY;   
-        } 
+                $factor = $factorTODAY;
+        }
         $retorno = $factor;
     } else {
         $factor = $cfg->factorBcvUSD;
@@ -167,8 +167,8 @@ function RetornaFactorCambiario($codprove, $moneda) {
 }
 function MesesActivoPreferencial() {
     $fechaHoy = date("Y-m-d H:i:s");
-    $mes = date("m", strtotime($fechaHoy));  
-    $anio = date("Y", strtotime($fechaHoy)); 
+    $mes = date("m", strtotime($fechaHoy));
+    $anio = date("Y", strtotime($fechaHoy));
     $idmes = $mes.'/'.$anio;
     $chart_data = "";
     $codcli = sCodigoClienteActivo();
@@ -184,23 +184,23 @@ function MesesActivoPreferencial() {
                 for ($i = 0; $i < $contador; $i++) {
                     $campo = explode("-", $reg[$i]);
                     $mes = $campo[0];
-                    $dcto = $campo[1]; 
+                    $dcto = $campo[1];
                     $cuota = $campo[2];
                     $acum = $campo[3];
                     $chart_data .= "{ y: '".$mes."', a: ".$cuota.", b: ".$acum."},";
-                    if ($idmes == $mes) 
+                    if ($idmes == $mes)
                         break;
                 }
                 $chart_data = substr($chart_data, 0, -1);
             }
         }
     }
-    return $chart_data; 
+    return $chart_data;
 }
 function MesActivoPreferencial($DctoPreferencial) {
     $fechaHoy = date("Y-m-d H:i:s");
-    $mes = date("m", strtotime($fechaHoy));  
-    $anio = date("Y", strtotime($fechaHoy)); 
+    $mes = date("m", strtotime($fechaHoy));
+    $anio = date("Y", strtotime($fechaHoy));
     $idmes = $mes.'/'.$anio;
     $dcto = 0;
     $cuota = 0;
@@ -211,7 +211,7 @@ function MesActivoPreferencial($DctoPreferencial) {
         $campo = explode("-", $reg[$i]);
         $mes = $campo[0];
         if ($idmes == $mes) {
-            $dcto = $campo[1]; 
+            $dcto = $campo[1];
             $cuota = $campo[2];
             $acum = $campo[3];
             break;
@@ -236,12 +236,12 @@ function Minicpcheck($keys) {
             $status = "INACTIVO";
             $retorno = 0;
         } else {
-            $retorno = 1;    
+            $retorno = 1;
         }
         DB::table('maelicencias')
         ->where('cod_lic','=',$keys)
         ->update(array("status" => $status, "ultPing" => date('Y-m-d H:i:s')));
-    } 
+    }
     DB::purge('mysql2');
     Config::set('database.default', 'mysql');
     DB::reconnect('mysql');
@@ -287,7 +287,7 @@ function MinicpC($barra, $arrayProve) {
     ->first();
     if (!empty($tpmaestra)) {
         $retorno = $tpmaestra;
-    } 
+    }
     DB::purge('mysql2');
     Config::set('database.default', 'mysql');
     DB::reconnect('mysql');
@@ -346,7 +346,7 @@ function sLeerListaLotes($codprod) {
     ->where('codpadre','=',$codprod)
     ->where('cantidad','>',0)
     ->orderBy('id','asc')
-    ->get(); 
+    ->get();
     foreach ($lotes as $l) {
         $lote = trim($l->lote);
         $feclote = trim($l->feclote);
@@ -361,7 +361,7 @@ function sCodigoClienteActivo() {
     $tipo = Auth::user()->tipo;
     if (!Session::has('codcli')) {
        if ($tipo == "G" || $tipo == "V") {
-            $codcli = Auth::user()->codcliactivo; 
+            $codcli = Auth::user()->codcliactivo;
         } else {
             $codcli = Auth::user()->codcli;
         }
@@ -388,7 +388,7 @@ function sVerificarCaractExt($codprod) {
         if ($resp) {
             $resp = "CARACTERISTICAS EXTENDIDAS\n========================\n".$resp;
         }
-    } 
+    }
     return $resp;
 }
 function validarCaractExtendidas($pedirTot, $pedirPed, $cantidad, $undmin, $undmax, $undmultiplo, $codprod) {
@@ -404,7 +404,7 @@ function validarCaractExtendidas($pedirTot, $pedirPed, $cantidad, $undmin, $undm
 
             }
             else {
-                
+
                 // RETORNA LA CANTIDAD SOLICITADA ES MENOR AL MINIMO, SERA FORZADO AL MINIMO
                 return array('pedir' => $undmin, 'msg' => 'La cantidad solicitada es menor a la cantidad minima '.$undmin.', La Cantidad sera forzada al minimo', 'status' => 1);
             }
@@ -445,7 +445,7 @@ function validarCaractExtendidas($pedirTot, $pedirPed, $cantidad, $undmin, $undm
             $dif = $undmax - $pedirAnt;
             if ($dif <= 0) {
                 // RETORNA CERO, NO PUEDE PEDIR MAS, YA LLEGO A LA CUOTA DEL DIA
-                return array('pedir' => 0,'msg' => 'No puede perdir más, ya llego a la cuota maxima que es ('.$undmax.')', 'status' => 2);  
+                return array('pedir' => 0,'msg' => 'No puede perdir más, ya llego a la cuota maxima que es ('.$undmax.')', 'status' => 2);
             }
             else {
                 // RETORNA LA DIF SALDO RESTANTE PARA COMPLETAR EL MAXIMO
@@ -479,13 +479,13 @@ function validarCaractExtendidas($pedirTot, $pedirPed, $cantidad, $undmin, $undm
                         $z = $hasta - $desde;
                         $y = $pedirTot - $desde;
                         $x = $y * 100/$z;
-                        if ($x >= 50)  
+                        if ($x >= 50)
                             $pedirTot = $hasta;
                         else
                             $pedirTot = $desde;
-                        break; 
+                        break;
                     }
-                }   
+                }
             }
             return array('pedir' => $pedirTot, 'msg' => 'Cantidad a pedir ('.$pedirTot.'), multiplos de '.$undmultiplo. ' Se forzo la cantidad', 'status' => 1);
         }
@@ -542,9 +542,9 @@ function vRegitrarBusquedas($texto, $exitosa) {
 function bEnviaCorreo($asunto, $remite, $destino, $contenido) {
     $retorno = FALSE;
     try {
-        if (strlen($asunto)==0 || 
-            strlen($remite)==0 || 
-            strlen($destino)==0 || 
+        if (strlen($asunto)==0 ||
+            strlen($remite)==0 ||
+            strlen($destino)==0 ||
             strlen($contenido)==0  ) {
             return FALSE;
         }
@@ -572,7 +572,7 @@ function bEnviaCorreo($asunto, $remite, $destino, $contenido) {
         <body>
         <center><h2>SOPORTE TECNICO</h2></center>
         <center><h2>".$asunto."</h2></center>";
-      
+
         $message .= "<div><br>";
 
         $message .= "<center> FECHA: ".$fechaHoy."</center>";
@@ -582,7 +582,7 @@ function bEnviaCorreo($asunto, $remite, $destino, $contenido) {
         // PIE DEL FORMULARIO
         $message .= "<h4>
             <center>
-                ".$cfg->nombre." | RIF: ".$cfg->rif." 
+                ".$cfg->nombre." | RIF: ".$cfg->rif."
             </center>
         </h4>";
 
@@ -647,7 +647,7 @@ function vArreglarNombreImagenes() {
                 $s3 = explode(".", $s1);
                 if ( count($s3) > 1) {
                     $archivo = $s3[0];
-                    $extencion = $s3[1]; 
+                    $extencion = $s3[1];
 
                     //log::info("archivo: ".$archivo);
                     //log::info("extencion: ".$extencion);
@@ -674,7 +674,7 @@ function vArreglarNombreImagenes() {
 
                         }
 
-                       
+
                     }
                 }
             }
@@ -717,9 +717,9 @@ function vCargaImagenes() {
                             $nomimagen = '/prod/'.$barra.'.jpeg';
                         } else {
                             $mi_imagen = public_path().'/public/storage/prod/'.$barra.'.JPEG';
-                            if (@getimagesize($mi_imagen)) 
+                            if (@getimagesize($mi_imagen))
                                 $nomimagen = '/prod/'.$barra.'.JPEG';
-                        } 
+                        }
                     }
                 }
             }
@@ -774,14 +774,14 @@ function iCrearPedidoNuevo($tipedido) {
         if ($cnf) {
             $pedfiscal = 0;
         }
-        
+
         $id = DB::table('pedido')->insertGetId([
             'codcli' => $codcli,
-            'fecha' => $fecha, 
-            'estado' => 'NUEVO', 
+            'fecha' => $fecha,
+            'estado' => 'NUEVO',
             'fecenviado' => $fecha,
-            'fecprocesado' => $fecha, 
-            'origen' => $tipo.'-WEB', 
+            'fecprocesado' => $fecha,
+            'origen' => $tipo.'-WEB',
             'codvend' => $codvend,
             'usuario' => $usuario,
             'tipedido' => $tipedido,
@@ -813,9 +813,9 @@ function sLeerCategoria($codcat, $campo) {
     $reg = DB::table('categoria')
     ->where('codcat','=',$codcat)
     ->first();
-    if ($reg) 
+    if ($reg)
         return $reg->$campo;
-    else 
+    else
         return "";
 }
 function sLeerMarca($codmarca, $campo){
@@ -823,9 +823,9 @@ function sLeerMarca($codmarca, $campo){
     $reg = DB::table('marcaimg')
     ->where('codmarca','=',$codmarca)
     ->first();
-    if ($reg) 
+    if ($reg)
         return $reg->$campo;
-    else 
+    else
         return "";
 }
 function iContadorPedidos() {
@@ -843,7 +843,7 @@ function dTotalPedido($id) {
     ->first();
     if ($reg)
         return $reg->total;
-    else 
+    else
         return 0.00;
 }
 function iContadorRecRecibido() {
@@ -892,18 +892,18 @@ function iIdUltPedAbierto($codcli) {
                 ->delete();
                 $id = -1;
             } else {
-                // EL PEDIDO ESTA FUERA DE FECHA, PERO TIENE RENGLONES 
+                // EL PEDIDO ESTA FUERA DE FECHA, PERO TIENE RENGLONES
                 // ENTONCES SE DEBE BORRAR EL PEDIDO Y CREAR UNO NUEVO
-                // Y LUEGO COPIAR LOS DATOS DEL PEDIDO A NUEVO PEDIDO 
-                // PARA LOS RENGLONES DE DEBE HACER UN UPDATE DEL ID 
+                // Y LUEGO COPIAR LOS DATOS DEL PEDIDO A NUEVO PEDIDO
+                // PARA LOS RENGLONES DE DEBE HACER UN UPDATE DEL ID
                 // VIEJO POR EL NUEVO ID
                 $idnew = DB::table('pedido')->insertGetId([
                     'codcli' => $reg->codcli,
-                    'fecha' => date("Y-m-d H:i:s"), 
-                    'estado' => 'NUEVO', 
+                    'fecha' => date("Y-m-d H:i:s"),
+                    'estado' => 'NUEVO',
                     'fecenviado' => date("Y-m-d H:i:s"),
-                    'fecprocesado' => date("Y-m-d H:i:s"), 
-                    'origen' => $reg->origen, 
+                    'fecprocesado' => date("Y-m-d H:i:s"),
+                    'origen' => $reg->origen,
                     'codvend' => $reg->codvend,
                     'usuario' => $reg->usuario,
                     'tipedido' => $reg->tipedido,
@@ -935,7 +935,7 @@ function iIdUltPedAbierto($codcli) {
                 $id = $idnew;
             }
         }
-        
+
     }
     return $id;
 }
@@ -979,7 +979,7 @@ function vEliminarPedidoBlanco($codcli) {
                 $regs = DB::table('pedido')
                 ->where('id','=',$p->id)
                 ->delete();
-            }    
+            }
         }
     }
 }
@@ -999,7 +999,7 @@ function vEliminarReclamoBlanco($codcli) {
             $regs = DB::table('recren')
             ->where('id','=',$rec->id)
             ->delete();
-        }    
+        }
     }
 }
 function vEliminarPagoBlanco($codcli) {
@@ -1016,7 +1016,7 @@ function vEliminarPagoBlanco($codcli) {
             $regs = DB::table('pagren')
             ->where('id','=',$rec->id)
             ->delete();
-        }    
+        }
     }
 }
 function NombreImagen($codprod) {
@@ -1028,7 +1028,7 @@ function NombreImagen($codprod) {
         $reg = DB::table('lotes')
         ->where('codhijo','=',$codprod)
         ->first();
-        if ($reg) 
+        if ($reg)
             $codprod = $reg->codpadre;
     }
     $reg = DB::table('prodimg')
@@ -1037,12 +1037,12 @@ function NombreImagen($codprod) {
     ->first();
     if (empty($reg)) {
         $nombre = "noimagen.png";
-    } 
+    }
     else {
         $nombre = $reg->nomimagen;
         $mi_imagen = public_path().'/public/storage/'.$nombre;
-        if (!file_exists($mi_imagen)) 
-            $nombre = "noimagen.png";      
+        if (!file_exists($mi_imagen))
+            $nombre = "noimagen.png";
     }
     return $nombre;
 }
@@ -1053,12 +1053,12 @@ function NombreImagenCat($codcat) {
     ->first();
     if (empty($reg)) {
         $nombre = "noimagen.png";
-    } 
+    }
     else {
         $nombre = $reg->nomimagen;
         $mi_imagen = public_path().'/public/storage/'.$nombre;
-        if (!file_exists($mi_imagen)) 
-            $nombre = "noimagen.png"; 
+        if (!file_exists($mi_imagen))
+            $nombre = "noimagen.png";
     }
     return $nombre;
 }
@@ -1069,12 +1069,12 @@ function NombreImagenMarca($codmarca) {
     ->first();
     if (empty($reg)) {
         $nombre = "noimagen.png";
-    } 
+    }
     else {
         $nombre = $reg->nomimagen;
         $mi_imagen = public_path().'/public/storage/'.$nombre;
-        if (!file_exists($mi_imagen)) 
-            $nombre = "noimagen.png";      
+        if (!file_exists($mi_imagen))
+            $nombre = "noimagen.png";
     }
     return $nombre;
 }
@@ -1122,7 +1122,7 @@ function dBuscar_DctoVolumen($pedir, $dvDetalle) {
                 $hasta = 1000000.00;
             if (($pedir >= $desde) && ($pedir <= $hasta)) {
                 $dv = $dcto;
-                break;                
+                break;
             }
         }
     }
@@ -1166,7 +1166,7 @@ function CalculaPrecioNeto($precio, $da, $di, $dc, $pp, $dp, $dv, $dvp) {
         return $precio;
     }
     return $base;
-} 
+}
 function CalculaTotalesPedido($idpedido) {
 
     $pedido = DB::table('pedido')
@@ -1180,7 +1180,7 @@ function CalculaTotalesPedido($idpedido) {
             $neto = CalculaPrecioNeto($pr->precio, $pr->da, $pr->di, $pr->dc, $pr->pp, $pr->dp, $pr->dv, $pr->dvp);
             DB::table('pedren')
             ->where('item', '=', $pr->item)
-            ->update(array("neto" => $neto, 
+            ->update(array("neto" => $neto,
                 "subtotal" => ($neto * $pr->cantidad)
             ));
         }
@@ -1212,14 +1212,14 @@ function CalculaTotalesPedido($idpedido) {
         $impuesto = 0;
         if ($reg->imp)
             $impuesto = $reg->imp;
-       
+
         // CONTADOR DE ITEM DEL PEDIDO
         $reg = DB::table('pedren')
         ->where('id','=',$idpedido)
         ->selectRaw('count(*) as item')
         ->first();
         $item = 0;
-        if ($reg->item) 
+        if ($reg->item)
             $item = $reg->item;
 
         // TOTAL DE UNIDADES
@@ -1311,7 +1311,7 @@ function NombreCliente($codcli) {
     ->first();
     if (empty($cliente)) {
         return "";
-    } 
+    }
     else {
         $nombre = str_replace(',C.A.', '', $cliente->nombre);
         $nombre = str_replace(',CA', '', $nombre);
@@ -1342,13 +1342,13 @@ function CampoVendedor($id, $campo) {
     ->first();
     if (empty($reg)) {
         return "";
-    } 
+    }
     else {
         if ($campo == 'supervisor') {
             if (strlen($reg->$campo) > 0)
-                $nombre = 'SUPERVISOR';    
-            else 
-                $nombre = 'NORMAL';   
+                $nombre = 'SUPERVISOR';
+            else
+                $nombre = 'NORMAL';
         } else {
             $nombre = $reg->$campo;
         }
@@ -1362,7 +1362,7 @@ function NombreVendedor($id) {
     ->first();
     if (empty($reg)) {
         return "";
-    } 
+    }
     else {
         $nombre = $reg->nombre;
     }
@@ -1405,18 +1405,18 @@ function ContadorVisitas() {
     }
 }
 function Getfloat($str) {
-    $num = '0.00'; 
+    $num = '0.00';
     if ($str=='' || $str=='0'){
-        return floatval($num); 
+        return floatval($num);
     }
-    if(strstr($str, ",")) { 
-        $str = str_replace(",", "", $str); 
-    } 
-    if(preg_match("#([0-9\.]+)#", $str, $match)) { 
-        return floatval($match[0]); 
-    } else { 
-        return floatval($str); 
-    } 
+    if(strstr($str, ",")) {
+        $str = str_replace(",", "", $str);
+    }
+    if(preg_match("#([0-9\.]+)#", $str, $match)) {
+        return floatval($match[0]);
+    } else {
+        return floatval($str);
+    }
 }
 // FUNCIONES DE SINCRONIZACION DE DATA
 function CapturaSeped() {
@@ -1425,15 +1425,15 @@ function CapturaSeped() {
     $contador = 0;
     set_time_limit(1000);
     try {
-        $directorio = opendir($BASE_PATH); 
+        $directorio = opendir($BASE_PATH);
         while ($filename = readdir($directorio)) {
             if (!is_dir($filename)) {
                 $archivo = explode("-", $filename);
                 $valores = explode(".", $filename);
                 $tipo = $archivo[0];
-                $codcli = $archivo[1]; 
+                $codcli = $archivo[1];
                 $idlocal = $archivo[2];
-                $extencion = $valores[1]; 
+                $extencion = $valores[1];
                 $primero = 0;
                 if ($extencion == 'txt') {
                     if (is_readable($filename)) {
@@ -1446,11 +1446,11 @@ function CapturaSeped() {
                                         $primero++;
                                         $id = DB::table('pedido')->insertGetId([
                                             'codcli' => $s1[1],
-                                            'fecha' => $s1[2], 
-                                            'estado' => $s1[3], 
+                                            'fecha' => $s1[2],
+                                            'estado' => $s1[3],
                                             'fecenviado' => $s1[4],
-                                            'fecprocesado' => $s1[5], 
-                                            'origen' => $s1[6], 
+                                            'fecprocesado' => $s1[5],
+                                            'origen' => $s1[6],
                                             'usuario' => $s1[7],
                                             'codvend' => $s1[8],
                                             'tipedido' => $s1[9],
@@ -1470,15 +1470,15 @@ function CapturaSeped() {
                                             'destino' => $s1[23],
                                             'documento' => 'IDLOCAL: '.$s1[0],
                                             'codisb' => $s1[25]
-                                    
+
                                         ]);
                                     } else {
                                         DB::table('pedren')->insert([
-                                            'id' => $id, 
-                                            'codprod' => $s1[2], 
-                                            'desprod' => $s1[3], 
-                                            'cantidad' => $s1[4], 
-                                            'precio' => $s1[5], 
+                                            'id' => $id,
+                                            'codprod' => $s1[2],
+                                            'desprod' => $s1[3],
+                                            'cantidad' => $s1[4],
+                                            'precio' => $s1[5],
                                             'barra' => $s1[6],
                                             'tipocatalogo' => $s1[7],
                                             'regulado' => $s1[8],
@@ -1505,11 +1505,11 @@ function CapturaSeped() {
                                         $primero++;
                                         $id = DB::table('reclamo')->insertGetId([
                                             'codcli' => $s1[1],
-                                            'fecha' => $s1[2], 
-                                            'estado' => $s1[3], 
+                                            'fecha' => $s1[2],
+                                            'estado' => $s1[3],
                                             'fecenviado' => $s1[4],
-                                            'fecprocesado' => $s1[5], 
-                                            'origen' => $s1[6], 
+                                            'fecprocesado' => $s1[5],
+                                            'origen' => $s1[6],
                                             'usuario' => $s1[7],
                                             'factnum' => $s1[8],
                                             'fecfact' => $s1[9],
@@ -1527,7 +1527,7 @@ function CapturaSeped() {
                                         DB::table('recren')->insertGetId([
                                             'id' => $id,
                                             'codprod' => $s1[2],
-                                            'desprod' => $s1[3], 
+                                            'desprod' => $s1[3],
                                             'cantidad' => $s1[4],
                                             'precio' => $s1[5],
                                             'cantrec' => $s1[6],
@@ -1545,14 +1545,14 @@ function CapturaSeped() {
                                         $primero++;
                                         $id = DB::table('pago')->insertGetId([
                                             'codcli' => $s1[1],
-                                            'fecha' => $s1[2], 
-                                            'estado' => $s1[3], 
+                                            'fecha' => $s1[2],
+                                            'estado' => $s1[3],
                                             'fecenviado' => $s1[4],
-                                            'fecprocesado' => $s1[5], 
-                                            'origen' => $s1[6], 
+                                            'fecprocesado' => $s1[5],
+                                            'origen' => $s1[6],
                                             'usuario' => $s1[7],
                                             'observacion' => $s1[8],
-                                            'codvend' => $s1[9], 
+                                            'codvend' => $s1[9],
                                             'nomcli' => $s1[10],
                                             'total' => $s1[11],
                                             'codisb' => $s1[12]
@@ -1562,11 +1562,11 @@ function CapturaSeped() {
                                         switch ($subtipo) {
                                             case 'PR':
                                                 DB::table('pagren')->insert([
-                                                    'id' => $id, 
-                                                    'referencia' => $s1[3], 
-                                                    'cuenta' => $s1[4], 
+                                                    'id' => $id,
+                                                    'referencia' => $s1[3],
+                                                    'cuenta' => $s1[4],
                                                     'fecha' => $s1[5],
-                                                    'monto' => $s1[6], 
+                                                    'monto' => $s1[6],
                                                     'modo' => $s1[7],
                                                     'cheque' => $s1[8],
                                                     'banco' => $s1[9],
@@ -1575,12 +1575,12 @@ function CapturaSeped() {
                                                 break;
                                             case 'PD':
                                                 DB::table('pagdoc')->insert([
-                                                    'id' => $id, 
-                                                    'coddoc' => $s1[3], 
-                                                    'tipo' => $s1[4], 
+                                                    'id' => $id,
+                                                    'coddoc' => $s1[3],
+                                                    'tipo' => $s1[4],
                                                     'fecha' => $s1[5],
                                                     'vence' => $s1[6],
-                                                    'monto' => $s1[7], 
+                                                    'monto' => $s1[7],
                                                     'saldo' => $s1[8],
                                                     'codisb' => $s1[9]
                                                 ]);
@@ -1596,7 +1596,7 @@ function CapturaSeped() {
                         fwrite($fs,$id.PHP_EOL);
                         fclose($fs);
                         @unlink($filename);
-                    } 
+                    }
                 }
             }
         }
@@ -1616,12 +1616,12 @@ function Sincronizar() {
             $contador = 0;
             $codisb = trim($cfg->codisb);
             $BASE_PATH = $BASE_PATH_DATA.'/'.$codisb;
-            $directorio = opendir($BASE_PATH); 
+            $directorio = opendir($BASE_PATH);
             while ($filename = readdir($directorio)) {
                 if (!is_dir($filename)) {
                     $archivo = explode("_", $filename);
                     $valores = explode(".", $filename);
-                    $bandera = $archivo[0]; 
+                    $bandera = $archivo[0];
                     if ($bandera == 'ventares.txt') {
                         try {
                             eliminarPedidosBlanco();
@@ -1662,7 +1662,7 @@ function Sincronizar() {
                 ->where('codisb','=',$codisb)
                 ->update(array('fecha' => $fechaHoy));
                 // GENERA TABLAS PARA COMPATIBILIDAD CON TERCERO
-                GenerarTablas($codisb);  
+                GenerarTablas($codisb);
                 GenerarNotiProdFalla($codisb);
                 log::info("CD -> ********* CAPTURA DE DATOS (CODISB: ".$codisb." FINAL)  *********");
             }
@@ -1696,7 +1696,7 @@ function GenerarNotiProdFalla($codisb) {
             ->where('codprod','=', $codprod)
             ->where('activo','=', 1)
             ->get();
-            if ($prodfallaalerta->count() <= 0) 
+            if ($prodfallaalerta->count() <= 0)
                 continue;
             $loop = 1;
             foreach($prodfallaalerta as $pfa) {
@@ -1708,8 +1708,8 @@ function GenerarNotiProdFalla($codisb) {
                     'tipo' => 'PFA',
                     'asunto' => $asunto,
                     'remite' => $cfg->codisb,
-                    'fecha' => date('Y-m-d H:i:s') ]); 
-                    $loop = $loop + 1;   
+                    'fecha' => date('Y-m-d H:i:s') ]);
+                    $loop = $loop + 1;
                 }
                 // SE DEBE INACTIVAR LA ALERTA, PARA QUE NO VUELVA A NOTIFICAR
                 $item = DB::table('notientradas')->insertGetId([
@@ -1728,7 +1728,7 @@ function GenerarNotiProdFalla($codisb) {
 				->where('codprod','=', $codprod)
 				->update(array('activo' => 0));
 
-                log::info("NOTI (PFA) -> ID: ".$id." ITEM: ".$item." DESTINO: ".$codcli." ASUNTO: ".$asunto);       
+                log::info("NOTI (PFA) -> ID: ".$id." ITEM: ".$item." DESTINO: ".$codcli." ASUNTO: ".$asunto);
             }
         }
     }
@@ -1745,11 +1745,11 @@ function GenerarNotiProdFalla($codisb) {
         ->where('codprod','=', $codprod)
         ->first();
         if ($prodfalla) {
-       
+
             $producto = DB::table('producto')
             ->where('codprod','=', $codprod)
             ->first();
-            if ($producto) 
+            if ($producto)
                 continue;
 
             // ESTA NUEVAMENTE EN FALLA
@@ -1789,7 +1789,7 @@ function GenerarTablas($codisb) {
     //INTRANET_RUTA_SINCRONIZAR=/home/deznjdq920u6/public_ftp/intranet.dromarko.com/data
     $BASE_SEPED = env('INTRANET_RUTA_SINCRONIZAR', base_path());
     $BASE_PATH = $BASE_SEPED.'/'.$codisb.'/seped';
-    
+
     // 1.- PRODUCTO
     $existe = 0;
     $archivo = 'producto.txt';
@@ -1967,7 +1967,7 @@ function GenerarTablas($codisb) {
             Comprimir($rutaarc, $rutaarc.".zip");
             log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc);
         } else {
-           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)'); 
+           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)');
         }
     }
 
@@ -2000,7 +2000,7 @@ function GenerarTablas($codisb) {
             Comprimir($rutaarc, $rutaarc.".zip");
             log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc);
         } else {
-           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)'); 
+           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)');
         }
     }
 
@@ -2032,7 +2032,7 @@ function GenerarTablas($codisb) {
             Comprimir($rutaarc, $rutaarc.".zip");
             log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc);
         } else {
-           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)'); 
+           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)');
         }
     }
 
@@ -2061,7 +2061,7 @@ function GenerarTablas($codisb) {
             Comprimir($rutaarc, $rutaarc.".zip");
             log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc);
         } else {
-           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)'); 
+           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)');
         }
     }
 
@@ -2090,7 +2090,7 @@ function GenerarTablas($codisb) {
             Comprimir($rutaarc, $rutaarc.".zip");
             log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc);
         } else {
-           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)'); 
+           log::info("GT -> CODISB: ".$codisb." TABLA: ".$rutaarc.' (VACIO)');
         }
     }
 }
@@ -2106,10 +2106,10 @@ function cargarVentaRes($BASE_PATH, $codisb) {
             $schecksum = '';
             $checksum = file($destino);
             if ($checksum) {
-          
+
                 $s1 = explode("=", $checksum[0]);
                 //$codisb = $s1[1];
-           
+
                 $s1 = explode("=", $checksum[1]);
                 $fecsinc = trim($s1[1]);
 
@@ -2130,13 +2130,13 @@ function cargarVentaRes($BASE_PATH, $codisb) {
 
                 $s1 = explode("=", $checksum[7]);
                 $factorcambiario = trim($s1[1]);
-           
+
                 @unlink($destino);
                 $id = trim(substr($fecsinc,0,4).substr($fecsinc,5,2).substr($fecsinc,8,2));
 
                 DB::table('ventares')->insert([
                 'id' => $id,
-                'codisb' => $codisb,  
+                'codisb' => $codisb,
                 'fecha' => $fecsinc,
                 'numfact' => $numfact,
                 'totfact' => $totfact,
@@ -2265,10 +2265,10 @@ function cargarProducto($BASE_PATH, $codisb) {
                     $ppre = trim($s1[13]);
                     if (!is_numeric($upre)) {
                         $upre = 0;
-                    } 
+                    }
                     if (!is_numeric($ppre)) {
                         $ppre = 0.00;
-                    } 
+                    }
                     $undmin = "1";
                     $undmax = "99999999";
                     $undmultiplo = "0";
@@ -2279,7 +2279,7 @@ function cargarProducto($BASE_PATH, $codisb) {
                     $clase = 'NORMAL';
                     $cuarentena = "0";
                     $SuperOFertaMincp = 0;
-              
+
                     $prodcarext = DB::table('prodcarext')
                     ->where('codprod','=', $codprod)
                     ->where('codisb','=', $codisb)
@@ -2293,7 +2293,7 @@ function cargarProducto($BASE_PATH, $codisb) {
                         $indevolutivo = $prodcarext->indevolutivo;
                         $psicotropico = $prodcarext->psicotropico;
                         if ($refrigerado == 0)
-                            $refrigerado = $prodcarext->refrigerado; 
+                            $refrigerado = $prodcarext->refrigerado;
                         $clase = $prodcarext->clase;
                         $fechafalla_pce = $prodcarext->fechafalla;
 
@@ -2513,7 +2513,7 @@ function ProcesarSuperOfertas($prods, $codisb) {
     } else {
         log::info("CD -> INACTIVO EL MINCP: ".$resp);
         DB::table('producto')->update(array('SuperOFertaMincp' => '0'));
-    }    
+    }
 }
 function cargarCliente($BASE_PATH, $codisb) {
     $tabla = 'cliente';
@@ -2719,7 +2719,7 @@ function cargarProveedor($BASE_PATH, $codisb) {
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
                 DB::raw('lock tables '.$tabla.' write');
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -2739,7 +2739,7 @@ function cargarProveedor($BASE_PATH, $codisb) {
 
                         log::info("CD -> s1(".$tabla."): ".count($s1).' line: '.$line);
                         //0     1                     2 3 4 5 6      7 8 9    10        11   12
-                        //_0000|PROVEEDOR POR DEFINIR|0| | | |ACTIVO| |0|0.00|293936411|0.00|0.00| 
+                        //_0000|PROVEEDOR POR DEFINIR|0| | | |ACTIVO| |0|0.00|293936411|0.00|0.00|
                         log::info("CD -> codprov: ".$codprov);
                         log::info("CD -> nombre: ".$s1[1]);
                         log::info("CD -> rif: ".$s1[2]);
@@ -2805,8 +2805,8 @@ function cargarFact($BASE_PATH, $codisb) {
                         break;
                     }
                 }
-                if ($modo == "INICIAL") { 
-                    // DELETE DE LOS REGISTRO 
+                if ($modo == "INICIAL") {
+                    // DELETE DE LOS REGISTRO
                     $reg = DB::table($tabla)
                     ->where('codisb', '=', $codisb)
                     ->delete();
@@ -2818,7 +2818,7 @@ function cargarFact($BASE_PATH, $codisb) {
                 foreach($lines as $line) {
                     $line = trim($line);
                     $s1 = explode("|", $line);
-                    if (count($s1) == 1) 
+                    if (count($s1) == 1)
                         continue;
                     if (count($s1) <> 22) {
                         log::info("CD -> ERROR: s1(".$tabla."): ".count($s1).' line: '.$line);
@@ -2886,7 +2886,7 @@ function cargarFact($BASE_PATH, $codisb) {
                             DB::table($tabla)
                             ->where('factnum', '=', $factnum)
                             ->where('codisb', '=', $codisb)
-                            ->update(array("fecha" => $fecha, 
+                            ->update(array("fecha" => $fecha,
                                 'codcli' => trim($s1[2]),
                                 'descrip' => $descrip,
                                 'monto' => trim($s1[4]),
@@ -2965,8 +2965,8 @@ function cargarFactRen($BASE_PATH, $codisb) {
                         break;
                     }
                 }
-                if ($modo == "INICIAL") { 
-                    // DELETE DE LOS REGISTRO 
+                if ($modo == "INICIAL") {
+                    // DELETE DE LOS REGISTRO
                     $reg = DB::table($tabla)
                     ->where('codisb', '=', $codisb)
                     ->delete();
@@ -2977,7 +2977,7 @@ function cargarFactRen($BASE_PATH, $codisb) {
                 foreach($lines as $line) {
                     $line = trim($line);
                     $s1 = explode("|", $line);
-                    if (count($s1) == 1) 
+                    if (count($s1) == 1)
                         continue;
                     if (count($s1) <> 17) {
                         log::info("CD -> ERROR: s1(".$tabla."): ".count($s1).' line: '.$line);
@@ -3019,7 +3019,7 @@ function cargarFactRen($BASE_PATH, $codisb) {
                             'impuesto' => trim($s1[8]),
                             'descto' => trim($s1[9]),
                             'nrolote' => trim($s1[10]),
-                            'fechal' => trim($s1[11]), 
+                            'fechal' => trim($s1[11]),
                             'fecfactura' => trim($s1[12]),
                             'codisb' => $codisb,
                             'codprov' => trim($s1[14]),
@@ -3048,7 +3048,7 @@ function cargarFactRen($BASE_PATH, $codisb) {
                                 'impuesto' => trim($s1[8]),
                                 'descto' => trim($s1[9]),
                                 'nrolote' => trim($s1[10]),
-                                'fechal' => trim($s1[11]), 
+                                'fechal' => trim($s1[11]),
                                 'fecfactura' => trim($s1[12]),
                                 'codprov' => trim($s1[14]),
                                 'marca' => trim($s1[15])
@@ -3066,7 +3066,7 @@ function cargarFactRen($BASE_PATH, $codisb) {
                                 'impuesto' => trim($s1[8]),
                                 'descto' => trim($s1[9]),
                                 'nrolote' => trim($s1[10]),
-                                'fechal' => trim($s1[11]), 
+                                'fechal' => trim($s1[11]),
                                 'fecfactura' => trim($s1[12]),
                                 'codisb' => $codisb,
                                 'codprov' => trim($s1[14]),
@@ -3099,7 +3099,7 @@ function cargarCxc($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3187,7 +3187,7 @@ function cargarCxp($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3283,8 +3283,8 @@ function cargarCtabanco($BASE_PATH, $codisb) {
                         break;
                     }
                 }
-                if ($modo == "INICIAL") { 
-                    // DELETE DE LOS REGISTRO 
+                if ($modo == "INICIAL") {
+                    // DELETE DE LOS REGISTRO
                     $reg = DB::table($tabla)
                     ->where('codisb', '=', $codisb)
                     ->delete();
@@ -3363,7 +3363,7 @@ function cargarVendedor($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3418,7 +3418,7 @@ function cargarCategoria($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3469,7 +3469,7 @@ function cargarLotes($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 //$reg = DB::table($tabla)->delete();
                 DB::table($tabla)
                 ->where('codisb', '=', $codisb)
@@ -3574,7 +3574,7 @@ function cargarMonedas($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3634,7 +3634,7 @@ function cargarProdFalla($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3693,7 +3693,7 @@ function cargarCestas($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-               // DELETE DE LOS REGISTRO 
+               // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3788,7 +3788,7 @@ function cargarChoferes($BASE_PATH, $codisb) {
             log::info("");
             log::info("CD -> Tabla: ".$tabla.' ***************************************');
             try {
-                // DELETE DE LOS REGISTRO 
+                // DELETE DE LOS REGISTRO
                 $reg = DB::table($tabla)
                 ->where('codisb', '=', $codisb)
                 ->delete();
@@ -3893,8 +3893,8 @@ function VerificarCarrito($codprod) {
             $resp = TRUE;
         }
     }
-    return $resp;    
-} 
+    return $resp;
+}
 function VerificarProdFallaAlerta($codprod) {
     $resp = FALSE;
     $codcli = sCodigoClienteActivo();
@@ -3903,10 +3903,10 @@ function VerificarProdFallaAlerta($codprod) {
     ->where('codcli','=', $codcli)
     ->where('codprod','=', $codprod)
     ->first();
-    if ($reg) 
+    if ($reg)
         $resp = TRUE;
     //log::info("CAMPO ".$resp);
-    return $resp;    
+    return $resp;
 }
 function iContadorNotiCliente() {
     $resp = 0;
@@ -3917,9 +3917,9 @@ function iContadorNotiCliente() {
     ->where('envio','=', 1)
     ->where('leido','=', 0)
     ->first();
-    if ($reg) 
+    if ($reg)
         $resp = $reg->contador;
-    return $resp;    
+    return $resp;
 }
 function iContadorNotiServidor() {
     $resp = 0;
@@ -3930,13 +3930,13 @@ function iContadorNotiServidor() {
     ->where('envio','=', 1)
     ->where('leido','=', 0)
     ->first();
-    if ($reg) 
+    if ($reg)
         $resp = $reg->contador;
-    return $resp;    
+    return $resp;
 }
 function BuscarMejorPrecio($barra, $provs, $dinternet, $ppago) {
     set_time_limit(500);
-    $retorno = null; 
+    $retorno = null;
     $contren = 0;
     $tpmaestra = DB::table('tpmaestra')
     ->where('barra','=',$barra)
@@ -3945,7 +3945,7 @@ function BuscarMejorPrecio($barra, $provs, $dinternet, $ppago) {
         for ($i = 0; $i < count($provs); $i++) {
             $codprove = strtolower($provs[$i]);
             if ($i == 0)
-                $codprove1 = $codprove; 
+                $codprove1 = $codprove;
             $data = $tpmaestra->$codprove;
             $campo = explode("|", $data);
             $cantidad = floatval($campo[1]);
@@ -3994,7 +3994,7 @@ function BuscarMejorPrecio($barra, $provs, $dinternet, $ppago) {
         }
         array_multisort($aux, SORT_ASC, $arrayProv);
         if ($codprove1 == $arrayProv[0]["codprove"] && $contProv == 1) {
-            // SOLO LO TIENE EL PROVEEDOR PRINCIPAL 
+            // SOLO LO TIENE EL PROVEEDOR PRINCIPAL
             return null;
         }
         if ($codprove1 != $arrayProv[0]["codprove"]) {
@@ -4005,9 +4005,9 @@ function BuscarMejorPrecio($barra, $provs, $dinternet, $ppago) {
         //log::info("CD -> PASO6");
     }
     return $retorno;
-}  
+}
 function QuitarCaracteres($str) {
-    $retorno = str_replace("\xB0", "", $str); 
+    $retorno = str_replace("\xB0", "", $str);
     $retorno = str_replace("\x9A", "", $retorno);
     $retorno = str_replace("\xD1", "", $retorno);
     $retorno = str_replace("\xD0", "", $retorno);
@@ -4015,14 +4015,14 @@ function QuitarCaracteres($str) {
     $retorno = str_replace("\xED", "", $retorno);
     $retorno = str_replace("\xDF", "", $retorno);
     $retorno = str_replace("\xC9", "", $retorno);
-    $retorno = str_replace("\\", "", $retorno); 
+    $retorno = str_replace("\\", "", $retorno);
     $retorno = str_replace("\n", " ", $retorno);
-    $retorno = str_replace("\t", " ", $retorno); 
+    $retorno = str_replace("\t", " ", $retorno);
     $retorno = str_replace("\xEF\xBB\xBF", "", $retorno);
-    $retorno = str_replace("\xEF", "", $retorno); 
-    $retorno = str_replace("\xBF", "", $retorno); 
-    $retorno = str_replace("\xBB", "", $retorno); 
-    $retorno = str_replace("\xC2", "", $retorno); 
+    $retorno = str_replace("\xEF", "", $retorno);
+    $retorno = str_replace("\xBF", "", $retorno);
+    $retorno = str_replace("\xBB", "", $retorno);
+    $retorno = str_replace("\xC2", "", $retorno);
     $retorno = str_replace("\xB4", "", $retorno);
     $retorno = str_replace("\xA0", "", $retorno);
     $retorno = str_replace("\xBA", "", $retorno);
